@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import click
+from kedro.framework.session import KedroSession
 from great_expectations import DataContext
 from great_expectations.cli import toolkit
 from great_expectations.cli.cli_messages import (
@@ -52,7 +53,9 @@ def init(target_directory, usage_stats):
             exit(5)
 
     if click.confirm("Generate Datasources based on Kedro Context?", default=True):
-        kedro_context = load_context(Path.cwd())
+        package_name = Path(os.getcwd()).resolve().name
+        with KedroSession.create(package_name) as session:
+            kedro_context = session.load_context()
         ge_context = toolkit.load_data_context_with_error_handling(ge_dir)
         new_datasources = generate_datasources(kedro_context, ge_context)
         if new_datasources:
@@ -63,7 +66,9 @@ def init(target_directory, usage_stats):
     if click.confirm(
         "Generate Basic Validation Suites based on Kedro Context?", default=True
     ):
-        kedro_context = load_context(Path.cwd())
+        package_name = Path(os.getcwd()).resolve().name
+        with KedroSession.create(package_name) as session:
+            kedro_context = session.load_context()
         ge_context = toolkit.load_data_context_with_error_handling(ge_dir)
         new_datasources = generate_basic_suites(kedro_context, ge_context)
         if new_datasources:
