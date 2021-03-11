@@ -10,11 +10,12 @@ def identify_dataset_type(
     spark_datasets: Optional[List[Type[AbstractDataSet]]] = None,
 ) -> Optional[DatasourceTypes]:
     from kedro.extras.datasets.spark import SparkDataSet
-    from kedro.extras.datasets.pandas import CSVDataSet, ExcelDataSet
+    from kedro.extras.datasets.pandas import CSVDataSet, ExcelDataSet, FeatherDataSet
 
     default_pandas_datasets = [
         CSVDataSet,
         ExcelDataSet,
+        FeatherDataSet
     ]
 
     default_spark_datasets = [SparkDataSet]
